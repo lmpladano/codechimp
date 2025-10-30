@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -13,6 +15,14 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+input {
+  height: 30px;
+  background: #63ffcb45;
+  position: absolute;
+  top: 53.7%;
+  z-index: 2;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -26,6 +36,7 @@ body {
   margin: 0;
   display: flex;
   place-items: center;
+  justify-content: center;
   min-width: 320px;
   min-height: 100vh;
 }
