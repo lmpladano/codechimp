@@ -18,24 +18,22 @@ export default function Window({ text }) {
   function handleChange(e) {
     const input = e.key;
     console.log(input);
-    if (input === target[index].char && index === target[index].index) {
+
+    if (input == "Backspace") {
+      setIndex((prev) => prev - 1);
       setTarget((prev) =>
         prev.map((item) =>
-          item.index === index ? { ...item, status: "correct" } : item
+          item.index === index - 1 ? { ...item, status: "pending" } : item
         )
       );
-      setIndex(index + 1);
-    } else if (input == "Backspace") {
+    }
+
+    if (input.length === 1) {
       setTarget((prev) =>
-        prev.map((item) =>
-          item.index === index ? { ...item, status: "pending" } : item
-        )
-      );
-      setIndex(index - 1);
-    } else {
-      setTarget((prev) =>
-        prev.map((item) =>
-          item.index === index ? { ...item, status: "incorrect" } : item
+        prev.map((item, i) =>
+          i === index
+            ? { ...item, status: input === item.char ? "correct" : "incorrect" }
+            : item
         )
       );
       setIndex(index + 1);
