@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import Letter from "./Letter";
 
 type Char = {
+  ref: object;
   char: string;
   status: string;
   index: number;
@@ -14,10 +15,54 @@ export default function Window({ text }) {
     })
   );
   const [index, setIndex] = useState(0);
+  const [cursorPos, setCursorPos] = useState({});
+  const letterRef = useRef([]);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    inputRef.current.focus();
+    let currentCursor = letterRef.current[index].getBoundingClientRect();
+    setCursorPos({ left: currentCursor.x, top: currentCursor.y });
+  }, [index]);
+
+  useLayoutEffect(() => {
+    inputRef.current.focus();
+    let currentCursor = letterRef.current[index].getBoundingClientRect();
+    setCursorPos({ left: currentCursor.x, top: currentCursor.y });
+  }, [index]);
+
+  function countSpaces(): number {
+    let count = 1;
+    let nextIndex = index + 1;
+
+    // Keep looping while the next char is a space AND within array bounds
+    while (nextIndex < target.length && target[nextIndex].char === " ") {
+      count++;
+      nextIndex++;
+    }
+
+    return count;
+  }
 
   function handleChange(e) {
     const input = e.key;
-    console.log(input);
+
+    if (input === "Enter") {
+      let count = countSpaces();
+      setTarget((prev) => {
+        return prev.map((item, i) => {
+          if (i >= index && i < index + count) {
+            return {
+              ...item,
+              status: item.char === " " ? "correct" : "incorrect",
+            };
+          }
+          return item;
+        });
+      });
+
+      setIndex((prevIndex) => prevIndex + count);
+    }
 
     if (input == "Backspace") {
       setIndex((prev) => prev - 1);
@@ -40,18 +85,27 @@ export default function Window({ text }) {
     }
   }
 
-  console.log(target);
-
   const word = target.map((item: Char) => (
-    <Letter status={item.status} index={item.index} txt={item.char} />
+    <Letter
+      ref={(el) => (letterRef.current[item.index] = el)}
+      status={item.status}
+      index={item.index}
+      txt={item.char}
+    />
   ));
   return (
     <>
-      <h1>hello</h1>
-      <div className="flex flex-row">{word}</div>
+      <div className="flex flex-row flex-wrap items-start w-180 bg-[#1a1a1a] ">
+        <div
+          className={`absolute w-0.5 h-8 bg-[#ffffff] transition-all duration-250 z-10`}
+          style={{ left: cursorPos.left, top: cursorPos.top }}
+        />
+        {word}
+      </div>
       <textarea
         onKeyDown={handleChange}
-        className="h-10 bg-[#63ffe2b0] absolute top-120"
+        ref={inputRef}
+        className="cursor-pointer bg-[#bd1d1d87] w-180 h-100 absolute opacity-0"
       />
     </>
   );
