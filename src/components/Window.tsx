@@ -1,5 +1,6 @@
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import Letter from "./Letter";
+import Fetch from "../hooks/data/useFetch";
 
 type Char = {
   ref: object;
@@ -8,28 +9,29 @@ type Char = {
   index: number;
 };
 
-export default function Window({ text }) {
+export default function Window({ text, next }) {
+  const [localText, setLocalText] = useState(text);
   const [target, setTarget] = useState(
-    text.split("").map((letter: string, i: number) => {
+    localText.split("").map((letter: string, i: number) => {
       return { char: letter, status: "pending", index: i };
     })
   );
+  const [valid, setValid] = useState(0);
   const [index, setIndex] = useState(0);
   const [cursorPos, setCursorPos] = useState({});
   const letterRef = useRef([]);
   const inputRef = useRef(null);
+  useEffect(() => {
+    setLocalText(text);
+  }, [text]);
 
   useEffect(() => {
     inputRef.current.focus();
     // let currentCursor = letterRef.current[index].getBoundingClientRect();
-    // setCursorPos({ left: currentCursor.x, top: currentCursor.y });
+    // cursorPos <= target.length
+    //   ? null
+    //   : setCursorPos({ left: currentCursor.x, top: currentCursor.y });
   }, [index]);
-
-  // useLayoutEffect(() => {
-  //   inputRef.current.focus();
-  //   let currentCursor = letterRef.current[index].getBoundingClientRect();
-  //   setCursorPos({ left: currentCursor.x, top: currentCursor.y });
-  // }, [index]);
 
   function countSpaces(): number {
     let count = 1;
@@ -84,6 +86,11 @@ export default function Window({ text }) {
     }
 
     if (index === target.length) {
+      for (let letter of target) {
+        console.log(letter);
+        letter.status == "correct" ? setValid((prev) => prev + 1) : null;
+      }
+      next((prev) => prev + 1);
       setIndex(0);
     }
   }
@@ -98,6 +105,7 @@ export default function Window({ text }) {
   ));
   return (
     <>
+      <h1 className="text-white">{valid}</h1>
       <div className="flex flex-row flex-wrap items-start w-180 bg-[#1a1a1a] ">
         <div
           className={`absolute w-0.5 h-8 bg-[#ffffff] transition-all duration-250 z-10`}
