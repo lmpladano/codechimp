@@ -1,16 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import Fetch from "./hooks/data/useFetch";
 import Window from "./components/Window";
 
 function App() {
   const [txt, setTxt] = useState(null);
-  useEffect(() => {
-    async function getData() {
-      const response = await fetch("http://localhost:3000/txt");
-      const data = await response.json();
-      setTxt(data);
-    }
-    getData();
-  }, []);
+  Fetch(setTxt);
+
   if (!txt) return "";
   const test = txt[0].content;
   return (
