@@ -21,21 +21,20 @@ export default function Window({ text }) {
 
   useEffect(() => {
     inputRef.current.focus();
-    let currentCursor = letterRef.current[index].getBoundingClientRect();
-    setCursorPos({ left: currentCursor.x, top: currentCursor.y });
+    // let currentCursor = letterRef.current[index].getBoundingClientRect();
+    // setCursorPos({ left: currentCursor.x, top: currentCursor.y });
   }, [index]);
 
-  useLayoutEffect(() => {
-    inputRef.current.focus();
-    let currentCursor = letterRef.current[index].getBoundingClientRect();
-    setCursorPos({ left: currentCursor.x, top: currentCursor.y });
-  }, [index]);
+  // useLayoutEffect(() => {
+  //   inputRef.current.focus();
+  //   let currentCursor = letterRef.current[index].getBoundingClientRect();
+  //   setCursorPos({ left: currentCursor.x, top: currentCursor.y });
+  // }, [index]);
 
   function countSpaces(): number {
     let count = 1;
     let nextIndex = index + 1;
 
-    // Keep looping while the next char is a space AND within array bounds
     while (nextIndex < target.length && target[nextIndex].char === " ") {
       count++;
       nextIndex++;
@@ -82,6 +81,10 @@ export default function Window({ text }) {
         )
       );
       setIndex(index + 1);
+    }
+
+    if (index === target.length) {
+      setIndex(0);
     }
   }
 
