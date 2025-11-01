@@ -1,6 +1,5 @@
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import Letter from "./Letter";
-import Fetch from "../hooks/data/useFetch";
 
 type Char = {
   ref: object;
