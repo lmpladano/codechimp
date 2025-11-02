@@ -3,12 +3,13 @@ import Fetch from "../hooks/data/useFetch";
 import TypingLogic from "../hooks/useTypingLogic";
 import Cursor from "./Cursor";
 import Letter from "./Letter";
+import type { Char } from "../types/Char";
 
 export default function Window() {
   const [current, setCurrent] = useState([]);
   const [index, setIndex] = useState(0);
   const inputRef = useRef(null);
-  const letterRef = useRef([]);
+  const letterRef = useRef<(HTMLParagraphElement | null)[]>([]);
   const data = Fetch();
 
   useEffect(() => {
@@ -20,10 +21,10 @@ export default function Window() {
     <>
       <div className="flex flex-row flex-wrap items-start w-180 bg-[#1a1a1a] ">
         <Cursor index={index} letterRef={letterRef} />
-        {current.map((item) => (
+        {current.map((item: Char) => (
           <Letter
             key={item.index}
-            ref={(el) => {
+            ref={(el: HTMLParagraphElement) => {
               letterRef.current[item.index] = el;
             }}
             status={item.status}
