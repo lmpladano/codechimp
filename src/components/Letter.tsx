@@ -1,4 +1,6 @@
-export default function Letter({ txt, status, index, ref }) {
+import type { Char } from "../types/Char";
+
+export default function Letter({ char, status, ref }: Char) {
   const letterStyle = "text-md p-0.5 transition-all duration-250";
   const statusColor = {
     pending: `${letterStyle} text-[#FCF5FC]`,
@@ -11,16 +13,15 @@ export default function Letter({ txt, status, index, ref }) {
   return (
     <p
       ref={ref}
-      id={index}
       className={`${statusColor[status]} ${
-        txt === "\n"
+        char === "\n"
           ? "basis-full opacity-0"
-          : coloredChars.includes(txt)
+          : coloredChars.includes(char)
           ? "text-[#a200ff]"
           : ""
       }`}
     >
-      {txt === " " ? "\u00A0" : txt === "\n" ? null : txt}
+      {char === " " ? "\u00A0" : char === "\n" ? null : char}
     </p>
   );
 }

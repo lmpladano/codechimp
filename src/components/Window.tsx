@@ -24,12 +24,11 @@ export default function Window() {
         {current.map((item: Char) => (
           <Letter
             key={item.index}
-            ref={(el: HTMLParagraphElement) => {
+            ref={(el: HTMLParagraphElement | null) => {
               letterRef.current[item.index] = el;
             }}
             status={item.status}
-            index={item.index}
-            txt={item.char}
+            char={item.char}
           />
         ))}
       </div>
