@@ -5,11 +5,11 @@ interface LetterProps {
 }
 
 export default function Letter({ char, status, ref }: LetterProps) {
-  const letterStyle = "text-md p-0.5 transition-all duration-250";
+  const letterStyle = "text-xl p-0.5 transition-all duration-250";
   const statusColor = {
-    pending: `${letterStyle} text-[#FCF5FC]`,
-    incorrect: `bg-[#ff6363] ${letterStyle} text-[#FCF5FC]`,
-    correct: `bg-[#2ACF00] ${letterStyle} text-[#FCF5FC]`,
+    pending: `${letterStyle} text-[#B0B0B0]`,
+    incorrect: `${letterStyle} bg-[#ff6363] text-[#FCF5FC]`,
+    correct: `${letterStyle} text-[#F5EDF5]`,
   };
 
   const coloredChars = ["(", ")", "{", "}", "[", "]", "+"];
@@ -19,7 +19,7 @@ export default function Letter({ char, status, ref }: LetterProps) {
       ref={ref}
       className={`${statusColor[status]} ${
         char === "\n"
-          ? "basis-full opacity-0"
+          ? "basis-full opacity-0 h-2"
           : coloredChars.includes(char)
           ? "text-[#a200ff]"
           : ""
