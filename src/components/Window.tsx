@@ -19,7 +19,7 @@ export default function Window() {
   const handleChange = TypingLogic(current, setCurrent, index, setIndex);
   return (
     <>
-      <div className="flex flex-row flex-wrap items-start w-180 bg-[#1a1a1a] ">
+      <div className="flex flex-row flex-wrap items-start w-180">
         <Cursor index={index} letterRef={letterRef} />
         {current.map((item: Char) => (
           <Letter
@@ -35,7 +35,7 @@ export default function Window() {
       <textarea
         onKeyDown={handleChange}
         ref={inputRef}
-        className="cursor-pointer bg-[#bd1d1d87] w-180 h-100 absolute opacity-0"
+        className="cursor-pointer bg-[#00000000] w-180 h-100 absolute opacity-0"
       />
     </>
   );

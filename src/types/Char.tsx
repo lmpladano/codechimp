@@ -1,7 +1,7 @@
 export type Char = {
   key: number;
-  ref: React.RefObject<HTMLParagraphElement> | null;
-  status: string;
+  ref: any;
+  status: "pending" | "incorrect" | "correct";
   index: number;
   char: string;
 };

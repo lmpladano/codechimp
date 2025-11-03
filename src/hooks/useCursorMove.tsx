@@ -1,6 +1,6 @@
 import { useState, useEffect, type RefObject } from "react";
 
-export default function CursorMove(index: number, letterRef: RefObject<>) {
+export default function CursorMove(index: number, letterRef: RefObject<any>) {
   const [cursorPos, setCursorPos] = useState({});
   useEffect(() => {
     if (!letterRef.current) return;

@@ -1,9 +1,8 @@
-import type { RefObject } from "react";
 import useCursorPosition from "../hooks/useCursorMove";
 
 type CursorProps = {
   index: number;
-  letterRef: RefObject<HTMLParagraphElement>;
+  letterRef: React.RefObject<(HTMLParagraphElement | null)[]>;
 };
 
 type Pos = {

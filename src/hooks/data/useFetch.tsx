@@ -6,7 +6,7 @@ export default function Fetch() {
       const response = await fetch("http://localhost:3000/txt");
       const data = await response.json();
       setData(
-        data[0].content.split("").map((letter: string, i: number) => {
+        data[1].content.split("").map((letter: string, i: number) => {
           return { char: letter, status: "pending", index: i };
         })
       );
