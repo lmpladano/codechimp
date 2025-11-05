@@ -11,7 +11,7 @@ export default function Info() {
 
   return (
     <>
-      <div className=" flex flex-row gap-5 text-2xl text-amber-50 m-10">
+      <div className=" flex flex-row gap-5 text-2xl text-amber-50 m-10 bg-black rounded-2xl p-10">
         <p>choose time:</p>
         <button onClick={handleClick} value={15}>
           15
