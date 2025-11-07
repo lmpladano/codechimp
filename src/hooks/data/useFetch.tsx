@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-export default function Fetch() {
+
+export default function useFetch() {
   const [data, setData] = useState([]);
   useEffect(() => {
     async function getData() {

@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react";
-import Fetch from "../hooks/data/useFetch";
+import useFetch from "../hooks/data/useFetch";
 import TypingLogic from "../hooks/useTypingLogic";
 import Cursor from "./Cursor";
 import Letter from "./Letter";
+import Info from "./Info";
 import type { Char } from "../types/Char";
 
 export default function Window() {
@@ -11,7 +12,7 @@ export default function Window() {
   const [index, setIndex] = useState(0);
   const inputRef = useRef(null);
   const letterRef = useRef<(HTMLParagraphElement | null)[]>([]);
-  const data = Fetch();
+  const data = useFetch();
 
   function getRandomIndex(max: number) {
     return Math.floor(Math.random() * max);
@@ -48,30 +49,33 @@ export default function Window() {
 
   const handleChange = TypingLogic(current, setCurrent, index, setIndex);
   return (
-    <div className="bg-[#131313] rounded-2xl p-5">
-      <textarea
-        onKeyDown={handleChange}
-        ref={inputRef}
-        className="cursor-pointer bg-[#00000000] w-180 h-100 absolute opacity-0"
-      />
-      <div className="flex flex-row flex-wrap items-start w-200">
-        <Cursor index={index} letterRef={letterRef} />
-        {current.map((item: Char) => (
-          <Letter
-            key={item.index}
-            ref={(el: HTMLParagraphElement | null) => {
-              letterRef.current[item.index] = el;
-            }}
-            status={item.status}
-            char={item.char}
-          />
-        ))}
+    <>
+      <Info start={index > 0 ? true : false} />
+      <div className="bg-[#131313] rounded-2xl p-5">
+        <textarea
+          onKeyDown={handleChange}
+          ref={inputRef}
+          className="cursor-pointer bg-[#00000000] w-180 h-100 absolute opacity-0"
+        />
+        <div className="flex flex-row flex-wrap items-start w-200">
+          <Cursor index={index} letterRef={letterRef} />
+          {current.map((item: Char) => (
+            <Letter
+              key={item.index}
+              ref={(el: HTMLParagraphElement | null) => {
+                letterRef.current[item.index] = el;
+              }}
+              status={item.status}
+              char={item.char}
+            />
+          ))}
+        </div>
+        <div className="flex flex-row flex-wrap items-start w-180 mt-10">
+          {queue.map((item: Char) => (
+            <Letter key={item.index} status={item.status} char={item.char} />
+          ))}
+        </div>
       </div>
-      <div className="flex flex-row flex-wrap items-start w-180 mt-10">
-        {queue.map((item: Char) => (
-          <Letter key={item.index} status={item.status} char={item.char} />
-        ))}
-      </div>
-    </div>
+    </>
   );
 }

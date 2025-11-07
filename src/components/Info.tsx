@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Timer from "./Timer";
 
-export default function Info() {
-  const [select, setSelect] = useState(10);
+export default function Info({ start }) {
+  const [select, setSelect] = useState(60);
 
   function handleClick(e) {
     setSelect(e.target.value);
@@ -22,7 +22,7 @@ export default function Info() {
         <button onClick={handleClick} value={60}>
           60
         </button>
-        <Timer time={select} />
+        <Timer time={select} start={start} />
       </div>
     </>
   );

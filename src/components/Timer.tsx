@@ -1,19 +1,29 @@
 import { useState, useEffect } from "react";
 
-export default function Timer({ time }) {
-  const [count, setCount] = useState(Number(time));
-
+export default function Timer({ time, start }) {
+  const [seconds, setSeconds] = useState(null);
   useEffect(() => {
-    const timerId = setTimeout(() => {
-      setCount((prevCount) => prevCount - 1);
-    }, 1000);
+    if (start && time > 0) {
+      setSeconds(time);
 
-    return () => clearTimeout(timerId);
-  }, [count]);
+      const interval = setInterval(() => {
+        setSeconds((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval); // ✅ stop when reaching 0
+            time = 0;
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(interval); // ✅ cleanup on unmount or re-render
+    }
+  }, [start, time]);
 
   return (
     <div>
-      <h1>Timer: {count}</h1>
+      <h1>Timer: {seconds ? seconds : time}</h1>
     </div>
   );
 }

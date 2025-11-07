@@ -7,12 +7,10 @@ export default function CursorMove(index: number, letterRef: RefObject<any>) {
 
     const node = letterRef.current[index];
     if (!node) {
-      console.log(node);
       return;
     }
 
     const compass = node.getBoundingClientRect();
-    console.log(compass);
     setCursorPos({ left: compass.x, top: compass.y });
   }, [letterRef, index]);
 
