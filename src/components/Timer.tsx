@@ -9,7 +9,7 @@ export default function Timer({ time, start }) {
       const interval = setInterval(() => {
         setSeconds((prev) => {
           if (prev <= 1) {
-            clearInterval(interval); // ✅ stop when reaching 0
+            clearInterval(interval);
             time = 0;
             return 0;
           }
@@ -17,7 +17,7 @@ export default function Timer({ time, start }) {
         });
       }, 1000);
 
-      return () => clearInterval(interval); // ✅ cleanup on unmount or re-render
+      return () => clearInterval(interval);
     }
   }, [start, time]);
 
