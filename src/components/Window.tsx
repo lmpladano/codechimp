@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import useFetch from "../hooks/data/useFetch";
 import TypingLogic from "../hooks/useTypingLogic";
 import Cursor from "./Cursor";
+import Results from "./Results";
 import Letter from "./Letter";
 import Info from "./Info";
 import type { Char } from "../types/Char";
