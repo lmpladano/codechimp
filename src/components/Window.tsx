@@ -2,24 +2,28 @@ import { useState, useEffect, useRef } from "react";
 import useFetch from "../hooks/data/useFetch";
 import TypingLogic from "../hooks/useTypingLogic";
 import Cursor from "./Cursor";
-import Results from "./Results";
 import Letter from "./Letter";
 import Info from "./Info";
 import type { Char } from "../types/Char";
 
+type TestText = { content: string };
+
 export default function Window() {
-  const [current, setCurrent] = useState([]);
-  const [queue, setQueue] = useState([]);
+  const [current, setCurrent] = useState<Char[]>([]);
+  const [queue, setQueue] = useState<Char[]>([]);
   const [index, setIndex] = useState(0);
-  const inputRef = useRef(null);
+
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const letterRef = useRef<(HTMLParagraphElement | null)[]>([]);
-  const data = useFetch();
+
+  // Temporary typing until we type the hook itself
+  const data = useFetch() as TestText[];
 
   function getRandomIndex(max: number) {
     return Math.floor(Math.random() * max);
   }
 
-  function grabTest(data: { content: string }[], index: number) {
+  function grabTest(data: TestText[], index: number): Char[] {
     return data[index].content.split("").map((letter, i) => ({
       char: letter,
       status: "pending",
@@ -46,12 +50,13 @@ export default function Window() {
       const nextIndex = getRandomIndex(data.length);
       setQueue(grabTest(data, nextIndex));
     }
-  }, [index, current.length, data]);
+  }, [index, current, queue, data]);
 
   const handleChange = TypingLogic(current, setCurrent, index, setIndex);
+
   return (
     <>
-      <Info start={index > 0 ? true : false} />
+      <Info start={index > 0} />
       <div className="bg-[#131313] rounded-2xl p-5">
         <textarea
           onKeyDown={handleChange}
@@ -60,7 +65,7 @@ export default function Window() {
         />
         <div className="flex flex-row flex-wrap items-start w-200">
           <Cursor index={index} letterRef={letterRef} />
-          {current.map((item: Char) => (
+          {current.map((item) => (
             <Letter
               key={item.index}
               ref={(el: HTMLParagraphElement | null) => {
@@ -72,7 +77,7 @@ export default function Window() {
           ))}
         </div>
         <div className="flex flex-row flex-wrap items-start w-180 mt-10">
-          {queue.map((item: Char) => (
+          {queue.map((item) => (
             <Letter key={item.index} status={item.status} char={item.char} />
           ))}
         </div>

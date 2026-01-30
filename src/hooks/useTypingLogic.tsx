@@ -34,8 +34,8 @@ export default function TypingLogic(current, setCurrent, index, setIndex) {
       setIndex((prev) => prev - 1);
       setCurrent((prev) =>
         prev.map((item) =>
-          item.index === index - 1 ? { ...item, status: "pending" } : item
-        )
+          item.index === index - 1 ? { ...item, status: "pending" } : item,
+        ),
       );
     }
 
@@ -44,8 +44,8 @@ export default function TypingLogic(current, setCurrent, index, setIndex) {
         prev.map((item, i) =>
           i === index
             ? { ...item, status: input === item.char ? "correct" : "incorrect" }
-            : item
-        )
+            : item,
+        ),
       );
       setIndex(index + 1);
     }

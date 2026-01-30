@@ -1,7 +1,7 @@
+export type CharStatus = "pending" | "incorrect" | "correct";
+
 export type Char = {
-  key: number;
-  ref: any;
-  status: "pending" | "incorrect" | "correct";
-  index: number;
   char: string;
+  status: CharStatus;
+  index: number;
 };
