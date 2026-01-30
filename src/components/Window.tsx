@@ -12,7 +12,7 @@ export default function Window() {
   const [current, setCurrent] = useState<Char[]>([]);
   const [queue, setQueue] = useState<Char[]>([]);
   const [index, setIndex] = useState(0);
-
+  const [start, setStart] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const letterRef = useRef<(HTMLParagraphElement | null)[]>([]);
 
@@ -54,12 +54,20 @@ export default function Window() {
 
   const handleChange = TypingLogic(current, setCurrent, index, setIndex);
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // start session on first "real" typing key
+    if (!start && (e.key.length === 1 || e.key === "Enter")) {
+      setStart(true);
+    }
+    handleChange(e);
+  };
+
   return (
     <>
-      <Info start={index > 0} />
+      <Info start={start} />
       <div className="bg-[#131313] rounded-2xl p-5">
         <textarea
-          onKeyDown={handleChange}
+          onKeyDown={handleKeyDown}
           ref={inputRef}
           className="cursor-pointer bg-[#00000000] w-180 h-100 absolute opacity-0"
         />
