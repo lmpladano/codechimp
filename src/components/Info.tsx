@@ -4,6 +4,8 @@ import Timer from "./Timer";
 export default function Info({ start }) {
   const [select, setSelect] = useState(60);
 
+  //time select
+
   function handleClick(e) {
     setSelect(e.target.value);
     console.log(select);

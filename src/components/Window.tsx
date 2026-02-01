@@ -23,6 +23,7 @@ export default function Window() {
     return Math.floor(Math.random() * max);
   }
 
+  // queue codesnipppet
   function grabTest(data: TestText[], index: number): Char[] {
     return data[index].content.split("").map((letter, i) => ({
       char: letter,
