@@ -5,6 +5,8 @@ interface LetterProps {
   status: "pending" | "incorrect" | "correct";
 }
 
+// leeter
+
 const Letter = forwardRef<HTMLParagraphElement, LetterProps>(
   ({ char, status }, ref) => {
     const letterStyle = "text-xl p-0.5 transition-all duration-250";
