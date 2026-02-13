@@ -1,14 +1,28 @@
 import { useState, useEffect } from "react";
 
-export default function useFetch() {
-  const [data, setData] = useState([]);
+type Snippet = {
+  id?: number;
+  content: string;
+  difficulty: "easy" | "medium" | "hard";
+  lang: string;
+};
+
+const API_BASE = (import.meta.env.VITE_API_URL || "http://localhost:3000").replace(/\/$/, "");
+
+export default function useFetch(language: string) {
+  const [data, setData] = useState<Snippet[]>([]);
+
   useEffect(() => {
     async function getData() {
-      const response = await fetch("http://localhost:3000/txt");
-      const data = await response.json();
-      setData(data);
+      const response = await fetch(
+        `${API_BASE}/txt?lang=${encodeURIComponent(language)}`,
+      );
+      const snippets = (await response.json()) as Snippet[];
+      setData(snippets);
     }
+
     getData();
-  }, []);
+  }, [language]);
+
   return data;
 }

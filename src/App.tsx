@@ -3,9 +3,9 @@ import Window from "./components/Window";
 
 function App() {
   return (
-    <div>
+    <div className="min-h-screen bg-amber">
       <Header />
-      <div className="flex flex-col justify-center items-center h-200 bg-amber">
+      <div className="mx-auto flex w-full max-w-[1600px] flex-col items-center px-4 pb-12 pt-8">
         <Window />
       </div>
     </div>

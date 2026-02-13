@@ -5,29 +5,32 @@ interface LetterProps {
   status: "pending" | "incorrect" | "correct";
 }
 
-// leeter
-
 const Letter = forwardRef<HTMLParagraphElement, LetterProps>(
   ({ char, status }, ref) => {
-    const letterStyle = "text-xl p-0.5 transition-all duration-250";
-    const statusColor = {
-      pending: `${letterStyle} text-[#B0B0B0]`,
-      incorrect: `${letterStyle} bg-[#ff6363] text-[#FCF5FC]`,
-      correct: `${letterStyle} text-[#F5EDF5]`,
-    };
+    const letterStyle =
+      "font-mono text-[18px] leading-7 px-[1px] transition-all duration-150";
 
-    const coloredChars = ["(", ")", "{", "}", "[", "]", "+"];
+    function getSyntaxColor(value: string): string {
+      if (["(", ")", "{", "}", "[", "]"].includes(value)) return "#a200ff";
+      if (["'", '"', "`"].includes(value)) return "#98c379";
+      if (/[0-9]/.test(value)) return "#d19a66";
+      if (/[+\-*/%=<>!&|^~?:]/.test(value)) return "#56b6c2";
+      if (["#", "/"].includes(value)) return "#7f848e";
+      if ([";", ",", "."].includes(value)) return "#9aa1ad";
+      return "#c9d1d9";
+    }
+
+    const syntaxColor = getSyntaxColor(char);
+    const letterClass =
+      status === "incorrect"
+        ? `${letterStyle} bg-[#ff6363] text-[#fff4f4]`
+        : `${letterStyle} ${status === "pending" ? "opacity-80" : "opacity-100"}`;
 
     return (
       <p
         ref={ref}
-        className={`${statusColor[status]} ${
-          char === "\n"
-            ? "basis-full opacity-0 h-2"
-            : coloredChars.includes(char)
-              ? "text-[#a200ff]"
-              : ""
-        }`}
+        className={`${letterClass} ${char === "\n" ? "basis-full opacity-0 h-2" : ""}`}
+        style={status === "incorrect" ? undefined : { color: syntaxColor }}
       >
         {char === " " ? "\u00A0" : char === "\n" ? null : char}
       </p>

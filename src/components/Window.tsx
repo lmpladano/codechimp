@@ -9,21 +9,23 @@ import type { Char } from "../types/Char";
 type TestText = { content: string };
 
 export default function Window() {
+  const [language, setLanguage] = useState("javascript");
   const [current, setCurrent] = useState<Char[]>([]);
   const [queue, setQueue] = useState<Char[]>([]);
   const [index, setIndex] = useState(0);
   const [start, setStart] = useState(false);
+  const [correctChars, setCorrectChars] = useState(0);
+  const [incorrectChars, setIncorrectChars] = useState(0);
+  const [totalKeystrokes, setTotalKeystrokes] = useState(0);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const letterRef = useRef<(HTMLParagraphElement | null)[]>([]);
 
-  // Temporary typing until we type the hook itself
-  const data = useFetch() as TestText[];
+  const data = useFetch(language) as TestText[];
 
   function getRandomIndex(max: number) {
     return Math.floor(Math.random() * max);
   }
 
-  // queue codesnipppet
   function grabTest(data: TestText[], index: number): Char[] {
     return data[index].content.split("").map((letter, i) => ({
       char: letter,
@@ -53,7 +55,23 @@ export default function Window() {
     }
   }, [index, current, queue, data]);
 
-  const handleChange = TypingLogic(current, setCurrent, index, setIndex);
+  const handleChange = TypingLogic(
+    current,
+    setCurrent,
+    index,
+    setIndex,
+    ({ correctDelta, incorrectDelta, keystroke }) => {
+      if (correctDelta !== 0) {
+        setCorrectChars((prev) => Math.max(0, prev + correctDelta));
+      }
+      if (incorrectDelta !== 0) {
+        setIncorrectChars((prev) => Math.max(0, prev + incorrectDelta));
+      }
+      if (keystroke !== 0) {
+        setTotalKeystrokes((prev) => prev + keystroke);
+      }
+    },
+  );
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     // start session on first "real" typing key
@@ -63,17 +81,51 @@ export default function Window() {
     handleChange(e);
   };
 
+  function handleRestart() {
+    setStart(false);
+    setIndex(0);
+    setCorrectChars(0);
+    setIncorrectChars(0);
+    setTotalKeystrokes(0);
+    letterRef.current = [];
+    if (data.length > 0) {
+      const currentIndex = getRandomIndex(data.length);
+      const queueIndex = getRandomIndex(data.length);
+      setCurrent(grabTest(data, currentIndex));
+      setQueue(grabTest(data, queueIndex));
+    }
+    inputRef.current?.focus();
+  }
+
+  function handleLanguageChange(nextLanguage: string) {
+    setLanguage(nextLanguage);
+    setStart(false);
+    setIndex(0);
+    setCorrectChars(0);
+    setIncorrectChars(0);
+    setTotalKeystrokes(0);
+    letterRef.current = [];
+  }
+
   return (
     <>
-      <Info start={start} />
-      <div className="bg-[#131313] rounded-2xl p-5">
+      <Info
+        start={start}
+        correctChars={correctChars}
+        incorrectChars={incorrectChars}
+        totalKeystrokes={totalKeystrokes}
+        onRestart={handleRestart}
+        language={language}
+        onLanguageChange={handleLanguageChange}
+      />
+      <div className="w-full max-w-[1000px] rounded-2xl bg-black p-5">
         <textarea
           onKeyDown={handleKeyDown}
           ref={inputRef}
           className="cursor-pointer bg-[#00000000] w-180 h-100 absolute opacity-0"
         />
         <div className="flex flex-row flex-wrap items-start w-200">
-          <Cursor index={index} letterRef={letterRef} />
+          <Cursor index={index} letterRef={letterRef} current={current} />
           {current.map((item) => (
             <Letter
               key={item.index}

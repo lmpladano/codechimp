@@ -1,17 +1,29 @@
+import type { RefObject } from "react";
 import useCursorPosition from "../hooks/useCursorMove";
+import type { Char } from "../types/Char";
 
 type CursorProps = {
   index: number;
-  letterRef: React.RefObject<(HTMLParagraphElement | null)[]>;
+  letterRef: RefObject<(HTMLParagraphElement | null)[]>;
+  current: Char[];
 };
 
-type Pos = {
-  left: number;
-  top: number;
-};
+export default function Cursor({ index, letterRef, current }: CursorProps) {
+  const pos = useCursorPosition(index, letterRef, current);
 
-export default function Cursor({ index, letterRef }: CursorProps) {
-  const pos: Pos = useCursorPosition(index, letterRef);
+  if (!pos.visible) return null;
+
+  if (pos.showReturnCue) {
+    return (
+      <div
+        className="absolute z-10 text-xl font-bold text-[#ffffff] transition-all duration-250"
+        style={{ left: pos.left, top: pos.top }}
+      >
+        ↓
+      </div>
+    );
+  }
+
   return (
     <div
       className={`absolute w-0.5 h-8 bg-[#ffffff] transition-all duration-250 z-10`}
