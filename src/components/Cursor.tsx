@@ -6,10 +6,16 @@ type CursorProps = {
   index: number;
   letterRef: RefObject<(HTMLParagraphElement | null)[]>;
   current: Char[];
+  awaitingNextSnippet?: boolean;
 };
 
-export default function Cursor({ index, letterRef, current }: CursorProps) {
-  const pos = useCursorPosition(index, letterRef, current);
+export default function Cursor({
+  index,
+  letterRef,
+  current,
+  awaitingNextSnippet = false,
+}: CursorProps) {
+  const pos = useCursorPosition(index, letterRef, current, awaitingNextSnippet);
 
   if (!pos.visible) return null;
 

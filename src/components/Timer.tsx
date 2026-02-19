@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 
 type TimerProps = {
-  time: number; // starting seconds (e.g., 60)
-  start: boolean; // whether timer should run
-  onComplete?: () => void; // optional callback when it hits 0
-  onTick?: (seconds: number) => void; // optional callback on every tick
+  time: number; // starting seconds
+  start: boolean;
+  onComplete?: () => void;
+  onTick?: (seconds: number) => void;
 };
 
 export default function Timer({ time, start, onComplete, onTick }: TimerProps) {

@@ -14,6 +14,7 @@ export default function Window() {
   const [queue, setQueue] = useState<Char[]>([]);
   const [index, setIndex] = useState(0);
   const [start, setStart] = useState(false);
+  const [awaitingNextSnippet, setAwaitingNextSnippet] = useState(false);
   const [correctChars, setCorrectChars] = useState(0);
   const [incorrectChars, setIncorrectChars] = useState(0);
   const [totalKeystrokes, setTotalKeystrokes] = useState(0);
@@ -34,6 +35,20 @@ export default function Window() {
     }));
   }
 
+  function advanceToNextSnippet() {
+    if (queue.length === 0) return;
+
+    setCurrent(queue);
+    setIndex(0);
+    setAwaitingNextSnippet(false);
+    letterRef.current = [];
+
+    if (data.length > 0) {
+      const nextIndex = getRandomIndex(data.length);
+      setQueue(grabTest(data, nextIndex));
+    }
+  }
+
   useEffect(() => {
     if (data.length === 0) return;
 
@@ -42,18 +57,16 @@ export default function Window() {
 
     setCurrent(grabTest(data, currentIndex));
     setQueue(grabTest(data, queueIndex));
+    setIndex(0);
+    setAwaitingNextSnippet(false);
   }, [data]);
 
   useEffect(() => {
     if (current.length === 0) return;
-    if (index >= current.length) {
-      setCurrent(queue);
-      setIndex(0);
-
-      const nextIndex = getRandomIndex(data.length);
-      setQueue(grabTest(data, nextIndex));
+    if (index >= current.length && !awaitingNextSnippet) {
+      setAwaitingNextSnippet(true);
     }
-  }, [index, current, queue, data]);
+  }, [index, current, awaitingNextSnippet]);
 
   const handleChange = TypingLogic(
     current,
@@ -74,6 +87,13 @@ export default function Window() {
   );
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (awaitingNextSnippet) {
+      if (e.key === "Enter") {
+        advanceToNextSnippet();
+      }
+      return;
+    }
+
     // start session on first "real" typing key
     if (!start && (e.key.length === 1 || e.key === "Enter")) {
       setStart(true);
@@ -84,6 +104,7 @@ export default function Window() {
   function handleRestart() {
     setStart(false);
     setIndex(0);
+    setAwaitingNextSnippet(false);
     setCorrectChars(0);
     setIncorrectChars(0);
     setTotalKeystrokes(0);
@@ -101,6 +122,7 @@ export default function Window() {
     setLanguage(nextLanguage);
     setStart(false);
     setIndex(0);
+    setAwaitingNextSnippet(false);
     setCorrectChars(0);
     setIncorrectChars(0);
     setTotalKeystrokes(0);
@@ -125,7 +147,12 @@ export default function Window() {
           className="cursor-pointer bg-[#00000000] w-180 h-100 absolute opacity-0"
         />
         <div className="flex flex-row flex-wrap items-start w-200">
-          <Cursor index={index} letterRef={letterRef} current={current} />
+          <Cursor
+            index={index}
+            letterRef={letterRef}
+            current={current}
+            awaitingNextSnippet={awaitingNextSnippet}
+          />
           {current.map((item) => (
             <Letter
               key={item.index}

@@ -65,9 +65,11 @@ export default function TypingLogic(
     }
 
     if (input == "Backspace") {
+      if (index === 0) return;
+
       let correctDelta = 0;
       let incorrectDelta = 0;
-      setIndex((prev) => prev - 1);
+      setIndex((prev) => Math.max(0, prev - 1));
       setCurrent((prev) =>
         prev.map((item) =>
           item.index === index - 1
