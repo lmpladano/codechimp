@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import useFetch from "../hooks/data/useFetch";
 import TypingLogic from "../hooks/useTypingLogic";
 import Cursor from "./Cursor";
@@ -15,8 +15,9 @@ export default function Window() {
   const [index, setIndex] = useState(0);
   const [start, setStart] = useState(false);
   const [awaitingNextSnippet, setAwaitingNextSnippet] = useState(false);
+  const [isResultsOpen, setIsResultsOpen] = useState(false);
   const [correctChars, setCorrectChars] = useState(0);
-  const [incorrectChars, setIncorrectChars] = useState(0);
+  const [finalizedIncorrectChars, setFinalizedIncorrectChars] = useState(0);
   const [totalKeystrokes, setTotalKeystrokes] = useState(0);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const letterRef = useRef<(HTMLParagraphElement | null)[]>([]);
@@ -35,8 +36,20 @@ export default function Window() {
     }));
   }
 
+  const currentIncorrectChars = useMemo(
+    () => current.filter((item) => item.status === "incorrect").length,
+    [current],
+  );
+
+  const totalIncorrectChars = finalizedIncorrectChars + currentIncorrectChars;
+
   function advanceToNextSnippet() {
     if (queue.length === 0) return;
+
+    const snippetIncorrect = current.filter(
+      (item) => item.status === "incorrect",
+    ).length;
+    setFinalizedIncorrectChars((prev) => prev + snippetIncorrect);
 
     setCurrent(queue);
     setIndex(0);
@@ -73,12 +86,9 @@ export default function Window() {
     setCurrent,
     index,
     setIndex,
-    ({ correctDelta, incorrectDelta, keystroke }) => {
+    ({ correctDelta, keystroke }) => {
       if (correctDelta !== 0) {
         setCorrectChars((prev) => Math.max(0, prev + correctDelta));
-      }
-      if (incorrectDelta !== 0) {
-        setIncorrectChars((prev) => Math.max(0, prev + incorrectDelta));
       }
       if (keystroke !== 0) {
         setTotalKeystrokes((prev) => prev + keystroke);
@@ -87,6 +97,8 @@ export default function Window() {
   );
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (isResultsOpen) return;
+
     if (awaitingNextSnippet) {
       if (e.key === "Enter") {
         advanceToNextSnippet();
@@ -106,7 +118,7 @@ export default function Window() {
     setIndex(0);
     setAwaitingNextSnippet(false);
     setCorrectChars(0);
-    setIncorrectChars(0);
+    setFinalizedIncorrectChars(0);
     setTotalKeystrokes(0);
     letterRef.current = [];
     if (data.length > 0) {
@@ -124,7 +136,7 @@ export default function Window() {
     setIndex(0);
     setAwaitingNextSnippet(false);
     setCorrectChars(0);
-    setIncorrectChars(0);
+    setFinalizedIncorrectChars(0);
     setTotalKeystrokes(0);
     letterRef.current = [];
   }
@@ -134,16 +146,18 @@ export default function Window() {
       <Info
         start={start}
         correctChars={correctChars}
-        incorrectChars={incorrectChars}
+        incorrectChars={totalIncorrectChars}
         totalKeystrokes={totalKeystrokes}
         onRestart={handleRestart}
         language={language}
         onLanguageChange={handleLanguageChange}
+        onResultsVisibilityChange={setIsResultsOpen}
       />
       <div className="w-full max-w-[1000px] rounded-2xl bg-black p-5">
         <textarea
           onKeyDown={handleKeyDown}
           ref={inputRef}
+          disabled={isResultsOpen}
           className="cursor-pointer bg-[#00000000] w-180 h-100 absolute opacity-0"
         />
         <div className="flex flex-row flex-wrap items-start w-200">
