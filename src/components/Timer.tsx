@@ -49,7 +49,7 @@ export default function Timer({ time, start, onComplete, onTick }: TimerProps) {
   }, [start, time, onComplete, onTick]);
 
   return (
-    <div className="inline-flex items-center gap-3 rounded-xl border border-white/15 bg-white/[0.04] px-4 py-2">
+    <div className="inline-flex items-center gap-3 rounded-xl border border-white/15 bg-white/4 px-4 py-2">
       <span className="text-[11px] uppercase tracking-[0.18em] text-white/55">
         Timer
       </span>

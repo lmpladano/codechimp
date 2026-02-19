@@ -16,6 +16,7 @@ type InfoProps = {
   onRestart: () => void;
   language: string;
   onLanguageChange: (language: string) => void;
+  onResultsVisibilityChange?: (visible: boolean) => void;
 };
 
 export default function Info({
@@ -26,12 +27,15 @@ export default function Info({
   onRestart,
   language,
   onLanguageChange,
+  onResultsVisibilityChange,
 }: InfoProps) {
   const [select, setSelect] = useState(60);
   const [showResults, setShowResults] = useState(false);
+
   const handleComplete = useCallback(() => {
     setShowResults(true);
   }, []);
+
   const handleRestart = useCallback(() => {
     setShowResults(false);
     onRestart();
@@ -40,6 +44,10 @@ export default function Info({
   useEffect(() => {
     setShowResults(false);
   }, [language]);
+
+  useEffect(() => {
+    onResultsVisibilityChange?.(showResults);
+  }, [showResults, onResultsVisibilityChange]);
 
   function handleClick(e: MouseEvent<HTMLButtonElement>) {
     setSelect(Number(e.currentTarget.value));
@@ -117,11 +125,7 @@ export default function Info({
               60s
             </button>
           </div>
-          <Timer
-            time={select}
-            start={start}
-            onComplete={handleComplete}
-          />
+          <Timer time={select} start={start} onComplete={handleComplete} />
         </div>
       </div>
       {showResults ? (
